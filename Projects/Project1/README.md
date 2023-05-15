@@ -5,8 +5,10 @@
 ### Language: *Haskell* (proj1.hs)
 
 ---
+
 Libraries
----
+---------
+
 1. System.IO
 2. System.Environment(getArgs)
 3. **Data.List.Split(split, oneOf)**
@@ -17,3 +19,10 @@ Libraries
 7. Data.Char(isSpace))
 8. Data.Map.Strict
 9. Data.Set
+
+
+#### ***How To Use:***
+
+**Command-line usage**: runhaskell proj1.hs [options: 'compress' or 'decompress'] [text file path here!]
+
+For the option argument, you may also enter any other string besides above, except whitespaces, to have the program automatically both compress & decompress (assuming input text file starts off un-compressed)!

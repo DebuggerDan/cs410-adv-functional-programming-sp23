@@ -8,8 +8,8 @@ import System.Environment(getArgs)
 import Data.List.Split(split, oneOf)--whenElt) -- Note: Might require installation
 import Data.Maybe(fromJust)
 import Data.List(sortBy, groupBy, sort)
-import Data.Either (rights)
-import Data.Char (isSpace)
+import Data.Either(rights)
+import Data.Char(isSpace)
 import qualified Data.Map.Strict as Map
 import qualified Data.Set as Set
 

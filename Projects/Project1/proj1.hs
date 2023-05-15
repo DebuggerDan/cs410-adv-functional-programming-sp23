@@ -60,23 +60,36 @@ output dictionary = map outputText--map(\num -> fromJust $ Map.lookup num (Map.f
 
 
 -- Load Pre-Compressed File for Decompression
+-- load :: FilePath -> IO(Webster, [Either String Int])
+-- load txtFile = do
+--     text <- readFile txtFile
+--     let (dictionaryLine:inputLine:_) = lines text
+--     let dictionary = dictionarinication (ttW dictionaryLine)
+--     let input = map(either Left(Right . read)) (ttW inputLine)
+--     return (dictionary, input)
+
+-- Load Pre-Compressed File for Decompression v2
 load :: FilePath -> IO(Webster, [Either String Int])
 load txtFile = do
     text <- readFile txtFile
-    let (dictionaryLine:inputLine:_) = lines text
+    let dictionaryLine : inputLine = lines text
     let dictionary = dictionarinication (ttW dictionaryLine)
-    let input = map(either Left(Right . read)) (ttW inputLine)
+    let input = map(either Left(Right . read)) (ttW (unlines inputLine))
     return (dictionary, input)
-
 
 -- Text Conversion to Words
 ttW :: String -> [Either String String]-- -> Webster
-ttW "" = []-- = split (oneOf " \t\n") . lines--split (whenElt (`elem` [' ','\t','\n'])) . lines--wordsBy(`elem` [' ','\t','\n'])
+--ttW "" = []-- = split (oneOf " \t\n") . lines--split (whenElt (`elem` [' ','\t','\n'])) . lines--wordsBy(`elem` [' ','\t','\n'])
+ttW = concatMap ttWLine . lines
 
-ttW e@(s:_)
+    where
 
-    | isSpace s = let (w, ord) = span isSpace e in Left w : ttW ord
-    | otherwise = let (w, ord) = span (not . isSpace) e in Right w : ttW ord
+        ttWLine "" = [Left "\n"]
+        ttWLine e@(s:_)
+
+            | s == '\n' = Left "\n" : ttWLine (tail e)
+            | isSpace s = let (w, ord) = span isSpace e in Left w : ttWLine ord
+            | otherwise = let (w, ord) = span (not . isSpace) e in Right w : ttWLine ord
 
 
 -- Main

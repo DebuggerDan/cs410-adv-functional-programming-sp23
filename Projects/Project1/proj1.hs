@@ -88,7 +88,7 @@ main = do
             case option of
 
                 "compress" -> do
-                    putStrLn $ unwords (Map.keys dictionary)--"The original text was: " ++ --txt
+                    putStr $ unwords (Map.keys dictionary)--"The original text was: " ++ --txt
                     putStrLn ""
                     mapM_ (either putStr (putStr . show)) theinput--"Here is the compressed text: " ++ (show theinput)
                 
@@ -105,7 +105,7 @@ main = do
                 
                 _ -> do
                     putStrLn "Default option (both + original text) selected.\n"
-                    putStrLn $ unwords (Map.keys dictionary)--"The original text was: " ++ --txt
+                    putStr $ unwords (Map.keys dictionary)--"The original text was: " ++ --txt
                     putStrLn ""
                     mapM_ (either putStr (putStr . show)) theinput
                     putStrLn ""

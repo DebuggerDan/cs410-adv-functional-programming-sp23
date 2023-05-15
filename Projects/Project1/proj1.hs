@@ -50,9 +50,9 @@ input dictionary = map inputText
 -- Text Conversion to Words
 ttW :: String -> [Either String String]-- -> Webster
 ttW "" = []-- = split (oneOf " \t\n") . lines--split (whenElt (`elem` [' ','\t','\n'])) . lines--wordsBy(`elem` [' ','\t','\n'])
-ttW s@(c:_)
-    | whitespace s = let (w, ord) = span whitespace e in Left w : ttW ord
-    | other = let (w, ord) = span (not . whitespace) s in Right w : ttW ord
+ttW e@(s:_)
+    | isSpace s = let (w, ord) = span isSpace e in Left w : ttW ord
+    | otherwise = let (w, ord) = span (not . isSpace) e in Right w : ttW ord
 
 -- Main
 main :: IO()
@@ -71,7 +71,8 @@ main = do
             --let theoutput = output dictionary theinput
 
             putStrLn $ unwords (Map.keys dictionary)--"The original text was: " ++ --txt
-            putStrLn $ "" ++ mapM_ (either putStr (putStr . show)) theinput--"Here is the compressed text: " ++ (show theinput)
+            putStrLn ""
+            mapM_ (either putStr (putStr . show)) theinput--"Here is the compressed text: " ++ (show theinput)
             --putStrLn $ "Here is the decompressed text: " ++ (unwords theoutput)
 
         _ -> putStrLn $ "Command-line usage: runhaskell proj1.hs [text file path here!]"

@@ -1,1 +1,4 @@
-The Nature of Monads are that Monads process data in a way that does something in a way that Monads process data. This method of processing data by Monads means that Monads, of course, would operate in accordance with the Monads unique process of data and stuff.
+The Nature of Monads are that Monads process data in a way that does something in a way that Monads process data.
+This method of processing data by Monads means that Monads, of course, would operate in accordance with the Monads unique process of data and stuff.
+
+Monads  ->  Monads  something something hehe

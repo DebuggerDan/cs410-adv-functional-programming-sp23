@@ -59,6 +59,16 @@ output dictionary = map outputText--map(\num -> fromJust $ Map.lookup num (Map.f
         swap (x, y) = (y, x)
 
 
+-- Load Pre-Compressed File for Decompression
+load :: FilePath -> IO(Webster, [Either String Int])
+load txtFile = do
+    text <- readFile txtFile
+    let (dictionaryLine:inputLine:_) = lines text
+    let dictionary = dictionarinication (ttW dictionaryLine)
+    let input = map(either Left(Right . read)) (ttW inputLine)
+    return (dictionary, input)
+
+
 -- Text Conversion to Words
 ttW :: String -> [Either String String]-- -> Webster
 ttW "" = []-- = split (oneOf " \t\n") . lines--split (whenElt (`elem` [' ','\t','\n'])) . lines--wordsBy(`elem` [' ','\t','\n'])
@@ -82,28 +92,35 @@ main = do
             
             let words = ttW txt
             let dictionary = dictionarinication words
-            let theinput = input dictionary words
-            let theoutput = output dictionary theinput
+            --let theinput = input dictionary words
+            --let theoutput = output dictionary theinput
 
             case option of
 
                 "compress" -> do
+                    let theinput = input dictionary words
                     putStr $ unwords (Map.keys dictionary)--"The original text was: " ++ --txt
                     putStrLn ""
                     mapM_ (either putStr (putStr . show)) theinput--"Here is the compressed text: " ++ (show theinput)
                 
                 "decompress" -> do
                     --putStrLn $ "Here is the decompressed text: " ++ (unwords theoutput)
+                    (loadDictionary, loadInput) <- load txtFile
+                    let decompressed = output loadDictionary loadInput
                     putStrLn ""
-                    mapM_ (either putStr putStr) theoutput
+                    mapM_ (either putStr putStr) decompressed
                 
-                "both" -> do
-                    putStrLn ""
-                    mapM_ (either putStr (putStr . show)) theinput
-                    putStrLn ""
-                    mapM_ (either putStr putStr) theoutput
+                -- "both" -> do
+                --     let theinput = input dictionary words
+                --     let theoutput = output dictionary theinput
+                --     putStrLn ""
+                --     mapM_ (either putStr (putStr . show)) theinput
+                --     putStrLn ""
+                --     mapM_ (either putStr putStr) theoutput
                 
                 _ -> do
+                    let theinput = input dictionary words
+                    let theoutput = output dictionary theinput
                     putStrLn "Default option (both + original text) selected.\n"
                     putStr $ unwords (Map.keys dictionary)--"The original text was: " ++ --txt
                     putStrLn ""
@@ -111,4 +128,4 @@ main = do
                     putStrLn ""
                     mapM_ (either putStr putStr) theoutput
         
-        _ -> putStrLn $ "Command-line usage: runhaskell proj1.hs [options: 'compress', 'decompress', 'both'] [text file path here!]\nFor the option argument, you may also enter any other string besides above, except whitespaces, to have the program automatically both compress & decompress!"
+        _ -> putStrLn $ "Command-line usage: runhaskell proj1.hs [options: 'compress' or 'decompress'] [text file path here!]\nFor the option argument, you may also enter any other string besides above, except whitespaces, to have the program automatically both compress & decompress (assuming input text file starts off un-compressed)!"

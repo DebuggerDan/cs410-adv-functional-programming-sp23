@@ -1,0 +1,58 @@
+cabal-version: 2.4
+name: assignment2
+version: 0.0.0.0
+synopsis: Assignment 2, CS 410/510 Advanced Functional Programming, Spring 2022.
+
+license: BSD-3-Clause
+author: Katie Casamento
+maintainer: cas28@pdx.com
+
+category: Education
+
+executable minesweeper
+  main-is: Main.hs
+  other-modules: Grid, Minesweeper
+
+  hs-source-dirs: src
+  default-language: GHC2021
+
+  build-depends:
+    base <5,
+    brick,
+    containers,
+    mtl,
+    optparse-applicative,
+    pretty-simple,
+    primitive,
+    random,
+    text,
+    transformers,
+    vector,
+    vty
+
+  default-extensions:
+    ApplicativeDo
+    DerivingVia
+    ImportQualifiedPost
+    LexicalNegation
+    NoFieldSelectors
+    NoStarIsType
+    OverloadedRecordDot
+
+  ghc-options:
+    -threaded
+    -fdefer-typed-holes
+    -fhelpful-errors
+    -fno-warn-missing-home-modules
+    -Werror=incomplete-patterns
+    -Werror=incomplete-record-updates
+    -Werror=incomplete-uni-patterns
+    -Werror=missing-fields
+    -Werror=overflowed-literals
+    -Werror=partial-fields
+    -Wduplicate-exports
+    -Widentities
+    -Wname-shadowing
+    -Wredundant-constraints
+    -Wtyped-holes
+    -O

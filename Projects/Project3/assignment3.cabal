@@ -4,8 +4,8 @@ version: 0.0.0.0
 synopsis: Assignment 3, CS 410/510 Advanced Functional Programming, Spring 2023.
 
 license: BSD-3-Clause
-author: Katie Casamento & Dan Jang
-maintainer: cas28@pdx.com & yeh2@pdx.edu
+author: Katie Casamento, Ranjit Jhala, & Dan Jang
+maintainer: cas28@pdx.com, jhala@cs.ucsd.edu, & yeh2@pdx.edu
 
 category: Education
 

@@ -241,9 +241,12 @@ neighborIndices i =
 --- The list may be in any order.
 --- For out-of-bounds indices, the function should return an empty list.
 
-neighborhood :: forall a. Grid a -> Index -> [a]
-neighborhood g i = [] 
+-- Original Function (for reference just in case):
+--- neighborhood :: forall a. Grid a -> Index -> [a]
+--- neighborhood g i = [] 
 
+neighborhood :: forall a. Grid a -> Index -> [a]
+neighborhood idx2 idx = catMaybes $ fmap (index idx2) (neighborIndices idx)--[] 
 
 -- Construct a Grid where each cell contains the neighborhood of the
 -- corresponding cell in the input Grid. Try this out with small grids in the

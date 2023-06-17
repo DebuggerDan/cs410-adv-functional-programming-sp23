@@ -76,10 +76,16 @@ surveyCell NoMine = 0
 -- (An `Index` is not considered adjacent to itself.)
 
 -- "Survey" a whole field: how many mines are adjacent to each cell?
+
+--- Original Function (for reference just in case):
+--- surveyField :: Field -> Survey
+--- surveyField field = Grid.map (const 9) field
+
 surveyField :: Field -> Survey
-surveyField field = Grid.map (const 9) field
-
-
+surveyField boom = Grid.map metalDetector (shape boom)-- (const 9) field
+  where
+    metalDetector :: Index -> SurveyCell
+    metalDetector gps_coordinates = sum[1 | Mine <- neighborhood boom gps_coordinates]
 
 -- Convert a cell on the game board to a string representing its state:
 --   "#" represents any covered cell

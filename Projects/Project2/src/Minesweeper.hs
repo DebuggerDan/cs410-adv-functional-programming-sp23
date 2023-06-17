@@ -36,6 +36,8 @@ type Field = Grid FieldCell
 data CoverCell where
   Covered :: CoverCell
   Uncovered :: CoverCell
+  -- For Project #3, Exercise 3.)
+  Flagged :: CoverCell
   deriving (Show, Eq)
 
 type Cover = Grid CoverCell
@@ -102,6 +104,8 @@ surveyField boom = Grid.map metalDetector (shape boom)-- (const 9) field
 --   "n" represents a cell with n adjacent mines (for 0 < n <= 8)
 renderCell :: FieldCell -> SurveyCell -> CoverCell -> String
 renderCell _ _ Covered = "#"
+-- For Project #3, Exercise 3.)
+renderCell _ _ Flagged = "!"
 renderCell Mine _ Uncovered = "@"
 renderCell NoMine 0 Uncovered = " "
 renderCell NoMine n Uncovered = show n
@@ -136,7 +140,9 @@ data SearchState where
 unseenNeighbors :: SearchState -> Index -> [Index]
 unseenNeighbors st i =
   List.filter
-    (\j -> Set.notMember j st.seen)
+    -- (\j -> Set.notMember j st.seen)
+    -- For Project #3, Exercise 3.)
+    (\j -> Set.notMember j st.seen && index st.currentCover j /= Just Flagged)
     (neighborIndices i)
 
 -- Pop an index off of the top of the working stack.

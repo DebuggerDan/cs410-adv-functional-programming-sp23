@@ -72,6 +72,10 @@ selectCellM field survey = do
 -- while the cell is highlighted. If the cell is already uncovered, there's
 -- nothing to update.
 flagCell :: CoverCell -> AppState -> AppState
+-- For Project #3, Exercise 3.)
+flagCell Covered st = st { cover = replace st.focus Flagged st.cover }
+flagCell Flagged st = st { cover = replace st.focus Covered st.cover }
+
 flagCell _ st = st
 
 flagCellM :: Field -> EventM Void AppState ()

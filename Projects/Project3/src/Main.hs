@@ -1,3 +1,6 @@
+----- CS 410 [Adv. Functional Programming], Spring 2023 - Dan Jang
+----- Project 3: Tic-tac-toe, Main.hs (based on Main.hs that was originally authored by Katie Casamento, (c) 2022 [see LICENSE & README.md])
+
 -- This module defines the UI logic of our Minesweeper program, based on the
 -- game logic in src/Minesweeper.hs and the Brick library for terminal UI.
 

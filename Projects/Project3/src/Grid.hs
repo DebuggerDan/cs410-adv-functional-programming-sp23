@@ -1,3 +1,6 @@
+----- CS 410 [Adv. Functional Programming], Spring 2023 - Dan Jang
+----- Project 3: Tic-tac-toe, Main.hs (based on Grid.hs that was originally authored by Katie Casamento, (c) 2022 [see LICENSE & README.md])
+
 -- This module defines the polymorphic data type that we use to represent a
 -- "board" in our game of minesweeper. We deal with several different types of
 -- "cells" in different parts of the code, so it's helpful to have a single

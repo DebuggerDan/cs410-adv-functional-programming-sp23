@@ -127,3 +127,94 @@ If the player tries to flag a cell that has already been uncovered, the game sta
 The almost all of the entire codebase for Project #3: *Tic-Tac-Toe* was created & written by Professor Katie Casamento, 2022.
 
 `LICENSE` contains the license for the original `assignment2` codebase as follows:
+
+```
+Copyright (c) 2022, Katie Casamento
+
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+    * Redistributions of source code must retain the above copyright
+      notice, this list of conditions and the following disclaimer.
+
+    * Redistributions in binary form must reproduce the above
+      copyright notice, this list of conditions and the following
+      disclaimer in the documentation and/or other materials provided
+      with the distribution.
+
+    * Neither the name of Katie Casamento nor the names of other
+      contributors may be used to endorse or promote products derived
+      from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+```
+
+In adherence to the academic requirements (3.1) & to just generally be honest, to implement this tic-tac-toe project, special thanks & credit to ***indirect*** assistance in the form of the following *OpenAI* prompt using the *GPT-4* model:
+
+```
+Without providing the actual code, suppose we are to create a command-line, keyboard-interactive tic-tac-toe game in Haskell.
+
+This is for a college programming assignment that asks to refrain from using non-specifically licensed shared code, thus, also to actually learn about Haskell and logic, please explain in thoughtful manner that is also concise for implementation specifics / tips.
+
+Assuming that we are starting off with a codebase that is, in contrast, implemented to represent Minesweeper. This codebase is comprised of three Haskell files, one for main implementation (containing the UI interface), one for definitions & functions of a polymorphic tic-tac-toe game grid data structure, and one for the definitions & functions of the rules of tic-tac-toe.
+
+Additionally, the tic-tac-toe board size & the order of playing (e.g., Player 1 goes first) will be determinable via command-line arguments.
+
+Tic-tac-toe rules would be described as, being on a board of size n by n, where n within the set of integers, there would exist 2n + 2 paths for any given tic-tac-toe player to win.
+
+Such a environment is given with n number of rows, n number of columns, and always exactly 2 diagonal paths only for winning on a n by n board for tic-tac-toe.
+
+To win, a player needs to fully mark a line that can either be vertical, horizontal, or a diagonal paths of n grid-squares are marked by either player 1 or player 2's specific move-markers.
+
+The game should end automatically upon a full n number of squares are connected in a way that achieves that of a full line as described above.
+
+After considering all the factors, specifications, definitions, and instructions aforementioned, please explain in human language, how to best (in terms of simplicity & efficiency) modify the pre-existing Minesweeper database to implement the game of tic-tac-toe.
+```
+
+Where the following was the generated response:
+
+```
+To modify the pre-existing Minesweeper codebase to implement the game of Tic-Tac-Toe, follow these steps:
+
+1. Modify the data structure for the game grid:
+   - In the file containing the grid data structure, replace the Minesweeper-specific elements with Tic-Tac-Toe elements.
+   - Define a data type for grid squares, which can be either Empty, Player1, or Player2.
+
+2. Modify the game rules:
+   - In the file containing the rules of Tic-Tac-Toe, create a function that checks for a win condition. This function should take the current game grid and the player's move as input and return a boolean value.
+   - Iterate through rows, columns, and diagonals to check for a win condition.
+   - If a player has n number of their markers in a row, column, or diagonal, the game should end.
+
+3. Modify the main implementation file:
+   - Parse command-line arguments to allow for custom board size and player order.
+   - Modify the game loop to handle Tic-Tac-Toe turns and moves instead of Minesweeper actions.
+   - At each turn, display the current game grid, prompt the player for input (row and column), and update the grid accordingly.
+   - Check for win conditions after each move using the win-checking function.
+   - If the game reaches a win condition or a draw (no more empty grid squares), display the appropriate message and exit the game loop.
+
+4. Update the user interface:
+   - Replace Minesweeper-specific text and visuals with Tic-Tac-Toe elements.
+   - Ensure that the input prompts and error messages are clear and relevant to Tic-Tac-Toe.
+
+By following these steps, you should be able to modify the Minesweeper codebase to create a working command-line, keyboard-interactive Tic-Tac-Toe game in Haskell. Remember to test and debug your code thoroughly to ensure a smooth gameplay experience.
+```
+
+Thus, there was no code given or taken from such a source, just a thorough explanation of how to go about the implementation process. I believe this would be 'fair game' according to requirements, but I am including this prompt & response to be 100% honest & give proper credit.
+
+Also, in following *OpenAI*'s *Sharing & Publication [Policy](https://openai.com/policies/sharing-publication-policy)* (last updated November 14th, 2022), which has a section that is somewhat applicable to this project, regarding "*Content co-authored with the OpenAI API*", here is the following disclaimer:
+
+```
+The co-author (Dan J.) notes conceptual knowledge assistance, but of in-direct & not direct code generation form, in part with GPT-4, OpenAI’s large-scale language-generation model. Upon generating conceptual explanation of Haskell methodologies & the explanation of how to approach implementation of Tic-Tac-Toe in Haskell, the co-author used the explanations & steps in implementation approach to their own liking and takes ultimate responsibility for their contribution to this modified codebase, originally authored by Professor Katie Casamento, 2022.
+```

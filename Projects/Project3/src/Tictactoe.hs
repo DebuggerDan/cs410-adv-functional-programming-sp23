@@ -1,3 +1,6 @@
+----- CS 410 [Adv. Functional Programming], Spring 2023 - Dan Jang
+----- Project 3: Tic-tac-toe, Tictactoe.hs (based on Minesweeper.hs; originally authored by Katie Casamento, (c) 2022 [see LICENSE & README.md])
+
 -- This module defines the game logic for our implementation of the game
 -- Minesweeper, based on the Grid type in src/Grid.hs.
 

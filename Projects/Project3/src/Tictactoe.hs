@@ -92,8 +92,8 @@ gameWon n board cell =
       diagonal1 = [board `Grid.index` Index idx idx | idx <- [0 .. n-1]]
       diagonal2 = [board `Grid.index` Index idx (n-1-idx) | idx <- [0 .. n-1]]
 
-      lines = rows ++ columns ++ [diagonal1, diagonal2]
-  in Prelude.any (flip checkLine cell) lines
+      winningLines = rows ++ columns ++ [diagonal1, diagonal2]
+  in Prelude.any (flip checkLine cell) winningLines
 
 -- gameWon :: Int -> Toe -> Cell -> Bool
 -- gameWon n board cell =

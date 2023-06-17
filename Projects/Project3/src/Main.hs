@@ -57,7 +57,7 @@ boardWidget :: Options -> AppState -> Widget Void
 boardWidget opts st =
   renderTable $ table $ Grid.toLists $
     Grid.zipWith3 cellWidget
-      (Grid.map (\i -> i == st.focus) (dimensions opts))
+      (Grid.map (\i -> i == st.focus) (opts.dim))
       (dimensions opts)--(shape field)
       st.board
       --(Grid.zip3 field)--field (surveyField field) st.cover)
@@ -141,13 +141,13 @@ handleEvent opts event = --argv event = --dim field survey event =
             when (gameWon (n opts) st.board toe) $ do
               
               -- lift is a nifty monad transformer thingy 
-              liftIO $ putStrLn $ show "very nice, " ++ show st.turn ++ " wins!"
+              liftM $ putStrLn $ show "very nice, " ++ show st.turn ++ " wins!"
               halt
             
             -- If it's all bruh, it's bruh moment (tie condition)
             -- Hopefully this does not trigger immediately when game starts somehow
             when (Grid.all (/= Empty) st.board) $ do
-              liftIO $ putStrLn "bruh, it is a tie"
+              liftM $ putStrLn "bruh, it is a tie"
               halt
         KBS    -> do
           st <- get

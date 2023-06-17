@@ -245,8 +245,12 @@ neighborIndices i =
 --- neighborhood :: forall a. Grid a -> Index -> [a]
 --- neighborhood g i = [] 
 
+-- Prev.:
+-- neighborhood :: forall a. Grid a -> Index -> [a]
+-- neighborhood idx2 idx = catMaybes $ fmap (index idx2) (neighborIndices idx)--[] 
+
 neighborhood :: forall a. Grid a -> Index -> [a]
-neighborhood idx2 idx = catMaybes $ fmap (index idx2) (neighborIndices idx)--[] 
+neighborhood idx2 idx = catMaybes $ fmap (index idx2) (neighborIndices idx)
 
 -- Construct a Grid where each cell contains the neighborhood of the
 -- corresponding cell in the input Grid. Try this out with small grids in the

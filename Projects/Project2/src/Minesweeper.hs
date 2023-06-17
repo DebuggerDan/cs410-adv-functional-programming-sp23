@@ -81,11 +81,19 @@ surveyCell NoMine = 0
 --- surveyField :: Field -> Survey
 --- surveyField field = Grid.map (const 9) field
 
+-- Prev.:
 surveyField :: Field -> Survey
 surveyField boom = Grid.map metalDetector (shape boom)-- (const 9) field
   where
     metalDetector :: Index -> SurveyCell
     metalDetector gps_coordinates = sum[1 | Mine <- neighborhood boom gps_coordinates]
+
+-- Prev. Prev.:
+-- surveyField :: Field -> Survey
+-- surveyField boom = Grid.map metalDetector (shape boom)
+--   where
+--     metalDetector idx =
+--       sum . fmap surveyCell . fmap (index boom) . neighborIndices $ idx
 
 -- Convert a cell on the game board to a string representing its state:
 --   "#" represents any covered cell

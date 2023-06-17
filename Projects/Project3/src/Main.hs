@@ -122,6 +122,11 @@ handleEvent ::
   --Dimensions -> Field -> Survey ->
   BrickEvent Void Void ->
   EventM Void AppState ()
+
+  -- Note: If I had started the project a (much earlier) little bit earlier, I would have most likely
+  -- modified the pre-existing survey field functions stuff to help with win-condition version, but I feel like
+  -- my apologies for not being able to do that at this time
+
 handleEvent opts event = --argv event = --dim field survey event =
   case event of
     -- The VtyEvent constructor with an EvKey argument indicates that the user

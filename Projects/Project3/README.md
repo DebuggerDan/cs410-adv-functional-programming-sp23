@@ -122,7 +122,7 @@ You will find these functions helpful:
 
 If the player tries to flag a cell that has already been uncovered, the game state should not change. If the player tries to flag a covered cell that is already flagged, the flag should be removed from the cell.
 
-# License & Acknowledgements
+# Licenses & Acknowledgements
 
 The almost all of the entire codebase for Project #3: *Tic-Tac-Toe* was created & written by Professor Katie Casamento, 2022.
 
@@ -217,4 +217,34 @@ Also, in following *OpenAI*'s *Sharing & Publication [Policy](https://openai.com
 
 ```
 The co-author (Dan J.) notes conceptual knowledge assistance, but of in-direct & not direct code generation form, in part with GPT-4, OpenAI’s large-scale language-generation model. Upon generating conceptual explanation of Haskell methodologies & the explanation of how to approach implementation of Tic-Tac-Toe in Haskell, the co-author used the explanations & steps in implementation approach to their own liking and takes ultimate responsibility for their contribution to this modified codebase, originally authored by Professor Katie Casamento, 2022.
+```
+
+I also drew inspiration & utilized the following publically licensed example of tic-tac-toe implementation in Haskell, from GitHub user [mstksg](https://github.com/mstksg), from their repository [brick-tac-toe](https://github.com/ranjitjhala/brick-tac-toe).
+
+As of June 17th, 2023, their repository was [licensed](https://github.com/ranjitjhala/brick-tac-toe/blob/main/LICENSE) based on the MIT LIcense, as follows (also included in LICENSE file):
+
+```
+
+The MIT License (MIT)
+
+Copyright (c) 2021 Ranjit Jhala
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 ```

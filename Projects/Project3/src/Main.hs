@@ -53,12 +53,13 @@ cellWidget selected i c = --(fc, sc, cc) =
 
 -- A Brick UI widget to represent an entire game board as a table of cells.
 -- Puts borders between each cell.
-boardWidget :: Field -> AppState -> Widget Void
-boardWidget field st =
+boardWidget :: Options -> AppState -> Widget Void
+boardWidget opts st =
   renderTable $ table $ Grid.toLists $
     Grid.zipWith3 cellWidget
-      (Grid.map (\i -> i == st.focus) (shape field))
-      (shape field)
+      (Grid.map (\i -> i == st.focus) (dimensions opts))
+      (dimensions opts)--(shape field)
+      st.board
       --(Grid.zip3 field)--field (surveyField field) st.cover)
 
 -- Update the UI after the user selects a cell by pressing the Enter key while
@@ -83,14 +84,14 @@ boardWidget field st =
 -- flagCell Covered st = st { cover = replace st.focus Flagged st.cover }
 -- flagCell Flagged st = st { cover = replace st.focus Covered st.cover }
 
-flagCell _ st = st
+-- flagCell _ st = st
 
-flagCellM :: Field -> EventM Void AppState ()
-flagCellM field = do
-  st <- get
-  case index st.cover st.focus of
-    Just cc -> put $ flagCell cc st
-    Nothing -> error ("crash: invalid index " ++ show st.focus)
+-- flagCellM :: Field -> EventM Void AppState ()
+-- flagCellM field = do
+--   st <- get
+--   case index st.cover st.focus of
+--     Just cc -> put $ flagCell cc st
+--     Nothing -> error ("crash: invalid index " ++ show st.focus)
 
 -- Handle a BrickEvent, which represents a user input or some other change in
 -- the terminal state outside our application. Brick gives us two relevant
@@ -113,7 +114,7 @@ handleEvent ::
   --Dimensions -> Field -> Survey ->
   BrickEvent Void Void ->
   EventM Void AppState ()
-handleEvent argv event = --dim field survey event =
+handleEvent opts event = --argv event = --dim field survey event =
   case event of
     -- The VtyEvent constructor with an EvKey argument indicates that the user
     -- has pressed a key on the keyboard. The empty list in the pattern
@@ -121,12 +122,12 @@ handleEvent argv event = --dim field survey event =
     -- while the key was pressed.
     VtyEvent (EvKey key []) ->
       case key of
-        KLeft  -> modify $ \st -> st { focus = wraparound (dimensions argv) (left  st.focus) }
-        KRight -> modify $ \st -> st { focus = wraparound (dimensions argv) (right st.focus) }
-        KUp    -> modify $ \st -> st { focus = wraparound (dimensions argv) (up    st.focus) }
-        KDown  -> modify $ \st -> st { focus = wraparound (dimensions argv) (down  st.focus) }
+        KLeft  -> modify $ \st -> st { focus = wraparound (opts.dim) (left  st.focus) }
+        KRight -> modify $ \st -> st { focus = wraparound (opts.dim) (right st.focus) }
+        KUp    -> modify $ \st -> st { focus = wraparound (opts.dim) (up    st.focus) }
+        KDown  -> modify $ \st -> st { focus = wraparound (opts.dim) (down  st.focus) }
         KEsc   -> halt
-        KEnter -> do--selectCellM field survey
+        KEnter -> do --selectCellM field survey
           st <- get
           
           let toe = leToe st.turn--st.board--st.toe
@@ -137,18 +138,19 @@ handleEvent argv event = --dim field survey event =
 
             -- Checkin' if there is a winner after each tic or tac on le toe
             -- Uses modified gameWon for tic-tac-toe winningness
-            when (gameWon (size argv) st.board toe) $ do
+            when (gameWon (n opts) st.board toe) $ do
               
               -- lift is a nifty monad transformer thingy 
-              liftM $ putStrLn $ show "very nice, " ++ st.turn ++ " wins!"
+              liftIO $ putStrLn $ show "very nice, " ++ show st.turn ++ " wins!"
               halt
             
             -- If it's all bruh, it's bruh moment (tie condition)
             -- Hopefully this does not trigger immediately when game starts somehow
             when (Grid.all (/= Empty) st.board) $ do
-              liftM $ putStrLn "bruh, it is a tie"
+              liftIO $ putStrLn "bruh, it is a tie"
               halt
         KBS    -> do
+          st <- get
           liftM $ putStrLn $ show st.turn ++ " loses automatically for trying to take back a turn heh (unless it was other that tried to do it, in that case, they lose instead)"--" ++ bigToe player 
           halt
         _      -> pure ()
@@ -189,16 +191,15 @@ gameAttrMap =
 -- just opt out of those Brick features. appDraw calls boardWidget to render
 -- the UI, appHandleEvent calls handleEvent to respond to user inputs, and
 -- gameAttrMap defines the text style of the UI.
-app :: Dimensions -> Field -> Survey -> App AppState Void Void
-app dim field survey =
+app :: Options -> App AppState Void Void --Dimensions -> Field -> Survey -> App AppState Void Void
+app opts = --dim field survey =
   App
-    { appDraw = \st -> [boardWidget field st]
+    { appDraw = \st -> [boardWidget opts st] --field st]
     , appChooseCursor = \_ _ -> Nothing
-    , appHandleEvent = handleEvent argv--dim field survey
+    , appHandleEvent = handleEvent opts --argv--dim field survey
     , appStartEvent = pure ()
     , appAttrMap = \_ -> gameAttrMap
     }
-
 
 -- The application state when the game starts: all cells are covered, and the
 -- focus is in the upper-left. Requires at least one cell in the grid, because
@@ -207,7 +208,9 @@ initialAppState :: Dimensions -> AppState
 initialAppState dim =
   AppState
     { cover = Grid.replicate dim Empty--Covered
+    , board = Grid.replicate dim Empty
     , focus = Index 0 0
+    , turn = Player1
     }
 
 --- Modified for Project #3: Tic-tac-toe
@@ -215,7 +218,7 @@ initialAppState dim =
 -- execution of the game.
 data Options where
   Options ::
-    { dimensions :: Dimensions
+    { dim :: Dimensions
     ,  n :: Int -- n x n tic-tac-toe board
     --, mines :: Int
     , firstTic :: Player
@@ -236,9 +239,9 @@ optionsParser = do
   -- actually, eitherReader might be better
   cointoss <- option (eitherReader coinReferee) (short 'p' <> value Player1 <> help "the winner of the coin-toss gets to play first! (the letter 'X' or the letter 'O')")
   pure $ Options
-    { dimensions = Dimensions {width = size, height = size}--{ size, size }
+    { dim = Dimensions {width = size, height = size}--{ size, size }
     , n = size
-    , firstTic -- = cointoss
+    , firstTic = cointoss
     }
   where
     --coinReferee :: String -> Either String String
@@ -264,24 +267,23 @@ options =
 main :: IO ()
 main = do
   opts <- options
-  argv <- options
+--argv <- options
   
-  let dim = dimensions argv
-  let field = Grid.replicate dim Empty-- <- toeField opts.dimensions
-  let initialAppState = AppState { board = field, focus = Index 0 0, turn = argv.firstTic argv}
-
+  let dim = opts.dim --argv
+  --let field = Grid.replicate dim Empty-- <- toeField opts.dim
+  let initialAppState' = initialAppState dim -- = AppState { board = field, focus = Index 0 0, turn = argv.firstTic argv}
   finalAppState <-
     defaultMain
-      (app argv)
-      initialAppState
+      (app opts)
+      initialAppState'
 
   putStrLn "Thank you for playing!"
 
-  -- field <- randomField opts.dimensions opts.mines
+  -- field <- randomField opts.dim opts.mines
   -- finalAppState <-
   --   defaultMain
-  --     (app opts.dimensions field (surveyField field))
-  --     (initialAppState opts.dimensions)
+  --     (app opts.dim field (surveyField field))
+  --     (initialAppState opts.dim)
   -- when (gameLost field finalAppState.cover) $
   --   putStrLn "you lose!"
   -- when (gameWon field finalAppState.cover) $

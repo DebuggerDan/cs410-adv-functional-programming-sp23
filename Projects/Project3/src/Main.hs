@@ -25,8 +25,8 @@ import Tictactoe
 --- Modified for Project #3: Tic-tac-toe
 data AppState where
   AppState ::
-    { --cover :: Cover
-      board :: Toe
+    { cover :: Cover
+    ,  board :: Toe
     , focus :: Index
     , turn :: Player
     } -> AppState
@@ -37,11 +37,11 @@ data AppState where
 -- it's unselected.
 cellWidget ::
   Bool -> Index ->
-  (FieldCell, SurveyCell, CoverCell) ->
+  Cell -> --(FieldCell, SurveyCell, CoverCell) ->
   Widget Void
-cellWidget selected i (fc, sc, cc) =
+cellWidget selected i c = --(fc, sc, cc) =
   let
-    cellText = renderCell fc sc cc
+    cellText = renderCell c -- sc cc
     baseWidget =
       withAttr (attrName cellText) $
         Brick.str cellText
@@ -59,29 +59,29 @@ boardWidget field st =
     Grid.zipWith3 cellWidget
       (Grid.map (\i -> i == st.focus) (shape field))
       (shape field)
-      (Grid.zip3 field (surveyField field) st.cover)
+      --(Grid.zip3 field)--field (surveyField field) st.cover)
 
 -- Update the UI after the user selects a cell by pressing the Enter key while
 -- the cell is highlighted. If the cell is already uncovered, there's nothing
 -- to update.
-selectCell :: CoverCell -> Survey -> AppState -> AppState
-selectCell Covered survey st = st { cover = uncoverCell st.focus survey st.cover }
-selectCell _ survey st = st
+-- selectCell :: CoverCell -> Survey -> AppState -> AppState
+-- selectCell Covered survey st = st { cover = uncoverCell st.focus survey st.cover }
+-- selectCell _ survey st = st
 
-selectCellM :: Field -> Survey -> EventM Void AppState ()
-selectCellM field survey = do
-  st <- get
-  case index st.cover st.focus of
-    Just cc -> put $ selectCell cc survey st
-    Nothing -> error ("crash: invalid index " ++ show st.focus)
+-- selectCellM :: Field -> Survey -> EventM Void AppState ()
+-- selectCellM field survey = do
+--   st <- get
+--   case index st.cover st.focus of
+--     Just cc -> put $ selectCell cc survey st
+--     Nothing -> error ("crash: invalid index " ++ show st.focus)
 
 -- Update the UI after the user flags a cell by pressing the Backspace key
 -- while the cell is highlighted. If the cell is already uncovered, there's
 -- nothing to update.
-flagCell :: CoverCell -> AppState -> AppState
--- For Project #3, Exercise 3.)
-flagCell Covered st = st { cover = replace st.focus Flagged st.cover }
-flagCell Flagged st = st { cover = replace st.focus Covered st.cover }
+-- flagCell :: CoverCell -> AppState -> AppState
+-- -- For Project #2, Exercise 3.)
+-- flagCell Covered st = st { cover = replace st.focus Flagged st.cover }
+-- flagCell Flagged st = st { cover = replace st.focus Covered st.cover }
 
 flagCell _ st = st
 
@@ -99,6 +99,15 @@ flagCellM field = do
 --   continue takes a next AppState and continues the UI thread
 
 --- Modified for Project 3: Tic-tac-toe
+
+leToe :: Player -> Cell
+leToe Player1 = X
+leToe Player2 = O
+
+bigToe :: Player -> Player
+bigToe Player1 = Player2
+bigToe Player2 = Player1
+
 handleEvent ::
   Options ->
   --Dimensions -> Field -> Survey ->
@@ -112,10 +121,10 @@ handleEvent argv event = --dim field survey event =
     -- while the key was pressed.
     VtyEvent (EvKey key []) ->
       case key of
-        KLeft  -> modify $ \st -> st { focus = wraparound dim (left  st.focus) }
-        KRight -> modify $ \st -> st { focus = wraparound dim (right st.focus) }
-        KUp    -> modify $ \st -> st { focus = wraparound dim (up    st.focus) }
-        KDown  -> modify $ \st -> st { focus = wraparound dim (down  st.focus) }
+        KLeft  -> modify $ \st -> st { focus = wraparound (dimensions argv) (left  st.focus) }
+        KRight -> modify $ \st -> st { focus = wraparound (dimensions argv) (right st.focus) }
+        KUp    -> modify $ \st -> st { focus = wraparound (dimensions argv) (up    st.focus) }
+        KDown  -> modify $ \st -> st { focus = wraparound (dimensions argv) (down  st.focus) }
         KEsc   -> halt
         KEnter -> do--selectCellM field survey
           st <- get
@@ -128,34 +137,34 @@ handleEvent argv event = --dim field survey event =
 
             -- Checkin' if there is a winner after each tic or tac on le toe
             -- Uses modified gameWon for tic-tac-toe winningness
-            when (gameWon st.board toe) $ do
+            when (gameWon (size argv) st.board toe) $ do
               
-              -- liftIO is a nifty monad transformer thingy 
-              liftIO $ putStrLn $ show "very nice, " ++ st.turn ++ " wins!"
+              -- lift is a nifty monad transformer thingy 
+              liftM $ putStrLn $ show "very nice, " ++ st.turn ++ " wins!"
               halt
             
             -- If it's all bruh, it's bruh moment (tie condition)
             -- Hopefully this does not trigger immediately when game starts somehow
-            when (Grid.all (/= Bruh) st.board) $ do
-              liftIO $ putStrLn "bruh, it is a tie"
+            when (Grid.all (/= Empty) st.board) $ do
+              liftM $ putStrLn "bruh, it is a tie"
               halt
         KBS    -> do
-          liftIO $ putStrLn $ show st.turn ++ " loses automatically for trying to take back a turn heh (unless it was other that tried to do it, in that case, they lose instead)"--" ++ bigToe player 
+          liftM $ putStrLn $ show st.turn ++ " loses automatically for trying to take back a turn heh (unless it was other that tried to do it, in that case, they lose instead)"--" ++ bigToe player 
           halt
         _      -> pure ()
     -- We don't care about any other kind of events, at least in this version
     -- of the code.
     _ -> pure ()
-  where
-    argv <- options
+  --where
+    --opts <- options
 
-    dim = dimensions argv
+    -- dim = dimensions opts
 
-    leToe Player1 = X
-    bigToe Player1 = Player2
+    -- leToe Player1 = X
+    -- bigToe Player1 = Player2
 
-    leToe Player2 = O
-    bigToe Player2 = Player1
+    -- leToe Player2 = O
+    -- bigToe Player2 = Player1
 
 -- The attribute map for our application, which Brick uses to apply text styles
 -- to our widgets. If you want to change the color scheme, the color values are
@@ -185,7 +194,7 @@ app dim field survey =
   App
     { appDraw = \st -> [boardWidget field st]
     , appChooseCursor = \_ _ -> Nothing
-    , appHandleEvent = handleEvent dim field survey
+    , appHandleEvent = handleEvent argv--dim field survey
     , appStartEvent = pure ()
     , appAttrMap = \_ -> gameAttrMap
     }
@@ -197,7 +206,7 @@ app dim field survey =
 initialAppState :: Dimensions -> AppState
 initialAppState dim =
   AppState
-    { cover = Grid.replicate dim Bruh--Covered
+    { cover = Grid.replicate dim Empty--Covered
     , focus = Index 0 0
     }
 
@@ -225,11 +234,11 @@ optionsParser = do
   -- oneof from optparse-applicative library
   --cointoss <- option (oneof[char 'X', char 'O']) (short 'p' <> value 'X' <> help "the winner of the coin-toss gets to play first! (the letter 'X' or the letter 'O')")
   -- actually, eitherReader might be better
-  cointoss <- option (eitherReader coinReferee) (short 'p' <> value Player <> help "the winner of the coin-toss gets to play first! (the letter 'X' or the letter 'O')")
+  cointoss <- option (eitherReader coinReferee) (short 'p' <> value Player1 <> help "the winner of the coin-toss gets to play first! (the letter 'X' or the letter 'O')")
   pure $ Options
-    { dimensions = Dimensions { size, size }
+    { dimensions = Dimensions {width = size, height = size}--{ size, size }
     , n = size
-    , firstTic-- = cointoss
+    , firstTic -- = cointoss
     }
   where
     --coinReferee :: String -> Either String String
@@ -255,14 +264,15 @@ options =
 main :: IO ()
 main = do
   opts <- options
+  argv <- options
   
-  let dim = dimensions opts
-  let field = Grid.replicate dim Bruh-- <- toeField opts.dimensions
-  let initialAppState = AppState { board = field, focus = Index 0 0, turn = opts.firstTic opts}
+  let dim = dimensions argv
+  let field = Grid.replicate dim Empty-- <- toeField opts.dimensions
+  let initialAppState = AppState { board = field, focus = Index 0 0, turn = argv.firstTic argv}
 
   finalAppState <-
     defaultMain
-      (app opts)
+      (app argv)
       initialAppState
 
   putStrLn "Thank you for playing!"

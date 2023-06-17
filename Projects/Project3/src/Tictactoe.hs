@@ -8,7 +8,7 @@ module Tictactoe where
 
 import Control.Monad.State
 import Data.Foldable (for_)
-import Data.List (uncons)
+import Data.List (uncons, any, all)
 import Data.List qualified as List
 import Data.Set (Set)
 import Data.Set qualified as Set
@@ -27,7 +27,7 @@ import Grid
 data Player = Player1 | Player2 deriving (Eq, Show)
 
 -- data Cell = ' ' | X | O deriving (Eq, Show)
-data Cell = Bruh | X | O deriving (Eq, Show)
+data Cell = Empty | X | O deriving (Eq, Show)
 
 -- There are three core concepts in our Minesweeper algorithms, which I've
 -- somewhat arbitrarily named "field", "cover", and "survey". (I'm not sure if
@@ -75,19 +75,48 @@ gameLost field cover =
   Grid.any (\(fc,cc) -> fc == Mine && cc == Uncovered) $
     Grid.zip field cover
 
+checkLine :: [Maybe Cell] -> Cell -> Bool
+checkLine line cell = Prelude.all (== Just cell) line
+
 ---- Modified for Project 3: Tic-Tac-Toe
+---- Credits to Ranjit Jhala for a guide on implementing the winning conditions
 -- Decide if the player has won a game: have they uncovered all the cells that
 -- aren't mines?
-gameWon :: Board -> Cell -> Bool--Field -> Cover -> Bool
-gameWon board cell = --field cover =
+
+-- Decide if the player has won a game: check for horizontal, vertical, and diagonal lines with the same cell
+
+gameWon :: Int -> Toe -> Cell -> Bool
+gameWon n board cell =
+  let rows = [[board `Grid.index` Index r c | c <- [0 .. n-1]] | r <- [0 .. n-1]]
+      columns = [[board `Grid.index` Index r c | r <- [0 .. n-1]] | c <- [0 .. n-1]]
+      diagonal1 = [board `Grid.index` Index idx idx | idx <- [0 .. n-1]]
+      diagonal2 = [board `Grid.index` Index idx (n-1-idx) | idx <- [0 .. n-1]]
+
+      lines = rows ++ columns ++ [diagonal1, diagonal2]
+  in Prelude.any (flip checkLine cell) lines
+
+-- gameWon :: Int -> Toe -> Cell -> Bool
+-- gameWon n board cell =
+--   Prelude.any isWinnerLine (rows ++ columns ++ diagonal)
+--   where
+--     rows = Grid.toLists board
+--     columns = Grid.toLists [[board `Grid.index` Index r c | r <- [0 .. n-1]] | c <- [0 .. n-1]]
+--     diagonal = [diagonal1 board, diagonal2 board]
+--     isWinnerLine line = Prelude.all (== cell) line
+
+-- gameWon :: Int -> Toe -> Cell -> Bool--Board -> Cell -> Bool--Field -> Cover -> Bool
+-- gameWon n board cell = --field cover =
   
-  any bingo (rows ++ columns ++ diagonal)
-  
-  where
-    rows = Grid.toLists board
-    columns = Grid.toLists (Grid.transport board)--(Grid.transpose rows)
-    diagonal = [diagonal1 board, diagonal2 board]--[Grid.toList (Grid.)]
-    bingo = all (== cell)
+--   --Grid.any bingo (rows ++ columns ++ diagonal)
+--   Data.List.any id [bingo rows, bingo columns, bingo diagonal1, bingo diagonal2]
+
+--   where
+--     rows = Grid.toLists board
+--     columns = Grid.toLists [[board `Grid.index` Index r c | r <- [0 .. n-1]] | c <- [0 .. n-1]] --(Grid.transport n board)--(Grid.transpose rows)
+--     diagonal1 = [board `Grid.index` Index idx idx | idx <- [0 .. n-1]]
+--     diagonal2 = [board `Grid.index` Index idx (n-1-idx) | idx <- [0 .. n-1]]
+--     --diagonal = [diagonal1 board, diagonal2 board]--[Grid.toList (Grid.)]
+--     bingo line = Data.List.all (==cell) line--Grid.all (== cell)
 
 -- "Survey" a single field cell: how many mines are in it, zero or one?
 surveyCell :: FieldCell -> SurveyCell
@@ -129,7 +158,7 @@ surveyField boom = Grid.map metalDetector (shape boom)-- (const 9) field
 
 --- Modified for Project 3: Tic-tac-toe
 renderCell :: Cell -> String--FieldCell -> SurveyCell -> CoverCell -> String
-renderCell Bruh = " " 
+renderCell Empty = " " 
 renderCell X = "X"
 renderCell O = "O"
 --renderCell _ _ Covered = "#"
@@ -141,17 +170,18 @@ renderCell O = "O"
 
 -- Convert a game board to a string representing its state. Use with
 -- Text.putStr, or use printBoardBoard.
-renderBoard :: Field -> Cover -> String
-renderBoard field cover =
+renderBoard :: Toe -> String --Field -> Cover -> String
+renderBoard board = --field cover =
   unlines $ Vector.toList $
     fmap (concat . Vector.toList) $
-      Grid.zipWith3 renderCell field (surveyField field) cover
+      --Grid.zipWith3 renderCell field (surveyField field) cover
+      Grid.map renderCell board
 
 -- Prints a game board to standard console output. This is not actually used in
 -- the UI code, since Brick handles the rendering there; this is just handy for
 -- debugging in the REPL.
-printBoard :: Field -> Cover -> IO ()
-printBoard field cover = putStr $ renderBoard field cover 
+--printBoard :: Field -> Cover -> IO ()
+--printBoard field cover = putStr $ renderBoard field cover 
 
 -- The type of state in our "uncovering" search algorithm, which is a
 -- depth-first graph search:

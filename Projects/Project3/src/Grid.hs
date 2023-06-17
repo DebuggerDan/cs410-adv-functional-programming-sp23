@@ -21,6 +21,23 @@ type Grid a = Vector (Vector a)
 -- We can construct Vectors with Vector.toList, so we can construct Grids with
 -- nested applications of Vector.toList.
 
+--- Project #3: Tic-tac-toe board transport (transpose but going with spelling error)
+{- transport :: Int -> Grid a -> Grid a--Grid (Maybe a)--Grid tic -> Grid tic
+transport n g = --tac = --Vector.fromList
+  let
+    dim = Dimensions n n
+    --trimaxStation idx = Index (idx.row) (idx.col)
+  in
+    Grid.generate dim $ \Index { column = c, row = r } -> --(\(Index column row) -> g `Grid.index` Index row column)--(Grid.index g . trimaxStation)
+      case Grid.index g (Index r c) of
+        Just x -> x
+        Nothing -> g -}
+        --Nothing -> 
+    --Grid.generate dim (flip index g . trimaxStation)
+
+-- trimaxStation :: Index -> Index
+-- trimaxStation (Index row column) = Index column row
+
 exampleGrid1 :: Grid Int -- or "exampleGrid1 :: Vector (Vector Int)"
 exampleGrid1 =
   Vector.fromList

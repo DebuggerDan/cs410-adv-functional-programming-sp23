@@ -4,7 +4,7 @@
 -- This module defines the game logic for our implementation of the game
 -- Minesweeper, based on the Grid type in src/Grid.hs.
 
-module Minesweeper where
+module Tictactoe where
 
 import Control.Monad.State
 import Data.Foldable (for_)
@@ -18,10 +18,20 @@ import System.Random (randomRIO)
 
 import Grid
 
+---- CS 410 [Adv. Functional Programming], Spring 2023 - Dan Jang
+---- Modified for Project 3: Tic-Tac-Toe
+
+-- data Player = X | 0
+-- data Player = X | O
+-- Player1 = X & Player2 = O
+data Player = Player1 | Player2 deriving (Eq, Show)
+
+-- data Cell = ' ' | X | O deriving (Eq, Show)
+data Cell = Bruh | X | O deriving (Eq, Show)
+
 -- There are three core concepts in our Minesweeper algorithms, which I've
 -- somewhat arbitrarily named "field", "cover", and "survey". (I'm not sure if
 -- there are common terms for these things, they're hard to search for.)
-
 
 -- A Field is a Grid that represents where each mine is on the game board.
 
@@ -32,6 +42,10 @@ data FieldCell where
 
 type Field = Grid FieldCell
 
+--- Project #3: Tic-Tac-Toe Board
+
+-- type Toe = Grid FieldCell
+type Toe = Grid Cell
 
 -- A Cover is a Grid that represents the visibility of each cell on the game
 -- board (whether the cell's value is hidden to the user in the UI).
@@ -39,7 +53,7 @@ type Field = Grid FieldCell
 data CoverCell where
   Covered :: CoverCell
   Uncovered :: CoverCell
-  -- For Project #3, Exercise 3.)
+  -- For Project #2, Exercise 3.)
   Flagged :: CoverCell
   deriving (Show, Eq)
 
@@ -61,12 +75,19 @@ gameLost field cover =
   Grid.any (\(fc,cc) -> fc == Mine && cc == Uncovered) $
     Grid.zip field cover
 
+---- Modified for Project 3: Tic-Tac-Toe
 -- Decide if the player has won a game: have they uncovered all the cells that
 -- aren't mines?
-gameWon :: Field -> Cover -> Bool
-gameWon field cover =
-  Grid.all (\(fc,cc) -> fc == Mine || cc == Uncovered) $
-    Grid.zip field cover
+gameWon :: Board -> Cell -> Bool--Field -> Cover -> Bool
+gameWon board cell = --field cover =
+  
+  any bingo (rows ++ columns ++ diagonal)
+  
+  where
+    rows = Grid.toLists board
+    columns = Grid.toLists (Grid.transport board)--(Grid.transpose rows)
+    diagonal = [diagonal1 board, diagonal2 board]--[Grid.toList (Grid.)]
+    bingo = all (== cell)
 
 -- "Survey" a single field cell: how many mines are in it, zero or one?
 surveyCell :: FieldCell -> SurveyCell
@@ -105,13 +126,18 @@ surveyField boom = Grid.map metalDetector (shape boom)-- (const 9) field
 --   "@" represents an uncovered mine
 --   " " represents a cell with zero adjacent mines
 --   "n" represents a cell with n adjacent mines (for 0 < n <= 8)
-renderCell :: FieldCell -> SurveyCell -> CoverCell -> String
-renderCell _ _ Covered = "#"
--- For Project #3, Exercise 3.)
-renderCell _ _ Flagged = "!"
-renderCell Mine _ Uncovered = "@"
-renderCell NoMine 0 Uncovered = " "
-renderCell NoMine n Uncovered = show n
+
+--- Modified for Project 3: Tic-tac-toe
+renderCell :: Cell -> String--FieldCell -> SurveyCell -> CoverCell -> String
+renderCell Bruh = " " 
+renderCell X = "X"
+renderCell O = "O"
+--renderCell _ _ Covered = "#"
+-- From Project #2, Exercise 3.)
+--renderCell _ _ Flagged = "!"
+--renderCell Mine _ Uncovered = "@"
+--renderCell NoMine 0 Uncovered = " "
+--renderCell NoMine n Uncovered = show n
 
 -- Convert a game board to a string representing its state. Use with
 -- Text.putStr, or use printBoardBoard.
@@ -144,7 +170,7 @@ unseenNeighbors :: SearchState -> Index -> [Index]
 unseenNeighbors st i =
   List.filter
     -- (\j -> Set.notMember j st.seen)
-    -- For Project #3, Exercise 3.)
+    -- For Project #2, Exercise 3.)
     (\j -> Set.notMember j st.seen && index st.currentCover j /= Just Flagged)
     (neighborIndices i)
 

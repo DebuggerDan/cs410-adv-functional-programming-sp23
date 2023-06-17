@@ -9,9 +9,9 @@ maintainer: cas28@pdx.com, jhala@cs.ucsd.edu, & yeh2@pdx.edu
 
 category: Education
 
-executable minesweeper
+executable tictactoe
   main-is: Main.hs
-  other-modules: Grid, Minesweeper
+  other-modules: Grid, Tictactoe
 
   hs-source-dirs: src
   default-language: GHC2021

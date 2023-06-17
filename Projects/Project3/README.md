@@ -126,7 +126,7 @@ If the player tries to flag a cell that has already been uncovered, the game sta
 
 The almost all of the entire codebase for Project #3: *Tic-Tac-Toe* was created & written by Professor Katie Casamento, 2022.
 
-`LICENSE` contains the license for the original `assignment2` codebase as follows:
+`LICENSE` contains the license (BSD 3 Clause) for the original `assignment2` codebase as follows:
 
 ```
 Copyright (c) 2022, Katie Casamento

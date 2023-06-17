@@ -8,7 +8,6 @@ Any code that involves the `IO`, `State`, or `EventM` types is code that you are
 
 You **are** expected to read and understand **all** of the other code. We are here to help whenever you have questions!
 
-
 # Minesweeper
 
 Take a few minutes to familiarize yourself with the rules of Minesweeper on Wikipedia or another source - the rules are pretty simple, but somewhat non-obvious if you've never seen the game before.
@@ -20,7 +19,6 @@ Our code is divided into three files, which I recommend reading first in this or
 - `src/Main.hs` defines an interactive console UI for playing Minesweeper.
 
 Each module is commented, but it will still probably take serious effort to decipher much of the code. You will most likely need to spend a lot of time experimenting in the interpreter.
-
 
 # Building and running
 
@@ -50,7 +48,6 @@ To play the game:
 - Press the Backspace key to flag a cell (once you've implemented the feature).
 - Press the Escape key to exit the game.
 
-
 # Requirements
 
 These requirements apply to all of the code that **you write** in this assignment. Provided code and library code are not subject to these requirements.
@@ -62,7 +59,6 @@ These requirements apply to the code that you **submit** for this assignment, bu
 - You must not write any calls to the `error` function or any uses of `undefined`.
 - You must not write any module imports that include the word `Unsafe`.
 - All of the code that you write must run in finite time for all possible inputs. You will not be graded on performance, but your code must not go into any infinite recursion.
-
 
 # Exercises
 
@@ -89,7 +85,6 @@ You may find these functions helpful:
 
 - `catMaybes`
 - `mapMaybe`
-
 
 2. Implement the `surveyField` function in `Minesweeper.hs` correctly. The function should return a `Survey` where each cell in the grid contains the number of mines that are adjacent to the given `Index` in the given `Field`. (An `Index` is not considered adjacent to itself.) For example:
 
@@ -122,7 +117,6 @@ You will find these functions helpful:
 - `List.map`
 - `Grid.map`
 - `sum :: [Int] -> Int` (specialized type)
-
 
 3. Implement the feature of flagged cells, where a player can flag a **covered** cell to indicate that they think it has a mine. In the game UI, a flag should appear as an exclamation mark (`!`). In the search algorithm that uncovers cells, a flagged cell should always be treated as "seen", so that flagged cells never get uncovered automatically.
 

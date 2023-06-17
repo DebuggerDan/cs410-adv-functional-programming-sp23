@@ -2,4 +2,5 @@ Test/proj1test.hs
 Test/*
 Test/
 Projects/Project2/dist-newstyle/*
+Projects/Project2/dist-newstyle/
 Projects/Project2/dist-newstyle

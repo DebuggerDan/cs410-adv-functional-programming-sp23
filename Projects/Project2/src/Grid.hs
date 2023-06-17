@@ -233,8 +233,17 @@ neighborIndices i =
 -- Get a list of every cell adjacent to a given Index in a Grid. This returns a
 -- list instead of a Vector because it may have anywhere from 3 to 8 values
 -- (the corners of a Grid each have only 3 adjacent cells).
+
+---- CS 410 [Adv. Functional Programming], Spring 2023 - Dan Jang
+---- Project 2: Minesweeper, Exercise #1.)
+--- "Implement the `neighborhood` function in `Grid.hs` correctly.
+--- The function should return the values of all cells adjacent to the given `Index` on the given `Grid`.
+--- The list may be in any order.
+--- For out-of-bounds indices, the function should return an empty list.
+
 neighborhood :: forall a. Grid a -> Index -> [a]
-neighborhood g i = []
+neighborhood g i = [] 
+
 
 -- Construct a Grid where each cell contains the neighborhood of the
 -- corresponding cell in the input Grid. Try this out with small grids in the

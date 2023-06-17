@@ -68,9 +68,17 @@ surveyCell :: FieldCell -> SurveyCell
 surveyCell Mine = 1
 surveyCell NoMine = 0
 
+---- CS 410 [Adv. Functional Programming], Spring 2023 - Dan Jang
+---- Project 2: Minesweeper, Exercise #2.)
+-- Implement the `surveyField` function in `Minesweeper.hs` correctly.
+-- The function should return a `Survey`,
+-- where each cell in the grid contains the number of mines that are adjacent to the given `Index` in the given `Field`.
+-- (An `Index` is not considered adjacent to itself.)
+
 -- "Survey" a whole field: how many mines are adjacent to each cell?
 surveyField :: Field -> Survey
 surveyField field = Grid.map (const 9) field
+
 
 
 -- Convert a cell on the game board to a string representing its state:

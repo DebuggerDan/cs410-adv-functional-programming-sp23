@@ -10,6 +10,7 @@ import Brick
 import Brick.Widgets.Border
 import Brick.Widgets.Table
 import Control.Monad
+import Control.Monad.Trans (liftIO)
 import Data.Void
 import Graphics.Vty.Attributes.Color
 import Graphics.Vty.Input.Events (Event(..), Key(..), Modifier(..), Button(..))
@@ -25,8 +26,8 @@ import Tictactoe
 --- Modified for Project #3: Tic-tac-toe
 data AppState where
   AppState ::
-    { cover :: Cover
-    ,  board :: Toe
+    { --cover :: Cover
+    board :: Toe
     , focus :: Index
     , turn :: Player
     } -> AppState
@@ -53,14 +54,21 @@ cellWidget selected i c = --(fc, sc, cc) =
 
 -- A Brick UI widget to represent an entire game board as a table of cells.
 -- Puts borders between each cell.
-boardWidget :: Options -> AppState -> Widget Void
-boardWidget opts st =
+-- boardWidget :: Options -> AppState -> Widget Void
+-- boardWidget opts st =
+--   renderTable $ table $ Grid.toLists $
+--     Grid.zipWith3 cellWidget
+--       (Grid.map (\i -> i == st.focus) (opts.dim))
+--       (dimensions opts)--(shape field)
+--       st.board
+--       --(Grid.zip3 field)--field (surveyField field) st.cover)
+boardWidget :: Field -> AppState -> Widget Void
+boardWidget field st =
   renderTable $ table $ Grid.toLists $
     Grid.zipWith3 cellWidget
-      (Grid.map (\i -> i == st.focus) (opts.dim))
-      (dimensions opts)--(shape field)
-      st.board
-      --(Grid.zip3 field)--field (surveyField field) st.cover)
+      (Grid.map (\i -> i == st.focus) (shape field))
+      (shape field)
+      st.board--st.cover--(Grid.zip3 field (surveyField field) st.cover)
 
 -- Update the UI after the user selects a cell by pressing the Enter key while
 -- the cell is highlighted. If the cell is already uncovered, there's nothing
@@ -141,17 +149,17 @@ handleEvent opts event = --argv event = --dim field survey event =
             when (gameWon (n opts) st.board toe) $ do
               
               -- lift is a nifty monad transformer thingy 
-              liftM $ putStrLn $ show "very nice, " ++ show st.turn ++ " wins!"
+              liftIO $ putStrLn $ show "very nice, " ++ show st.turn ++ " wins!"
               halt
             
             -- If it's all bruh, it's bruh moment (tie condition)
             -- Hopefully this does not trigger immediately when game starts somehow
             when (Grid.all (/= Empty) st.board) $ do
-              liftM $ putStrLn "bruh, it is a tie"
+              liftIO $ putStrLn "bruh, it is a tie"
               halt
         KBS    -> do
           st <- get
-          liftM $ putStrLn $ show st.turn ++ " loses automatically for trying to take back a turn heh (unless it was other that tried to do it, in that case, they lose instead)"--" ++ bigToe player 
+          liftIO $ putStrLn $ show st.turn ++ " loses automatically for trying to take back a turn heh (unless it was other that tried to do it, in that case, they lose instead)"--" ++ bigToe player 
           halt
         _      -> pure ()
     -- We don't care about any other kind of events, at least in this version
@@ -191,10 +199,10 @@ gameAttrMap =
 -- just opt out of those Brick features. appDraw calls boardWidget to render
 -- the UI, appHandleEvent calls handleEvent to respond to user inputs, and
 -- gameAttrMap defines the text style of the UI.
-app :: Options -> App AppState Void Void --Dimensions -> Field -> Survey -> App AppState Void Void
-app opts = --dim field survey =
+app :: Field -> Options -> App AppState Void Void --Dimensions -> Field -> Survey -> App AppState Void Void
+app board opts = --dim field survey =
   App
-    { appDraw = \st -> [boardWidget opts st] --field st]
+    { appDraw = \st -> [boardWidget board st]--[boardWidget opts st] --field st]
     , appChooseCursor = \_ _ -> Nothing
     , appHandleEvent = handleEvent opts --argv--dim field survey
     , appStartEvent = pure ()
@@ -207,8 +215,8 @@ app opts = --dim field survey =
 initialAppState :: Dimensions -> AppState
 initialAppState dim =
   AppState
-    { cover = Grid.replicate dim Empty--Covered
-    , board = Grid.replicate dim Empty
+    { --cover = Grid.replicate dim Empty--Covered
+    board = Grid.replicate dim Empty
     , focus = Index 0 0
     , turn = Player1
     }
@@ -222,6 +230,7 @@ data Options where
     ,  n :: Int -- n x n tic-tac-toe board
     --, mines :: Int
     , firstTic :: Player
+    , no :: Int
     } -> Options
     deriving Show
 
@@ -242,6 +251,7 @@ optionsParser = do
     { dim = Dimensions {width = size, height = size}--{ size, size }
     , n = size
     , firstTic = cointoss
+    , no = 0
     }
   where
     --coinReferee :: String -> Either String String
@@ -268,13 +278,16 @@ main :: IO ()
 main = do
   opts <- options
 --argv <- options
-  
+--let no = 0
+  --field <- randomField opts.dim 0--opts.no--no
+  board <- randomField opts.dim 0--opts.no--no
+
   let dim = opts.dim --argv
   --let field = Grid.replicate dim Empty-- <- toeField opts.dim
   let initialAppState' = initialAppState dim -- = AppState { board = field, focus = Index 0 0, turn = argv.firstTic argv}
   finalAppState <-
     defaultMain
-      (app opts)
+      (app board opts)
       initialAppState'
 
   putStrLn "Thank you for playing!"
